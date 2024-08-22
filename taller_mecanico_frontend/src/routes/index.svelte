@@ -1,12 +1,15 @@
 <script>
-    import { goto } from '$app/navigation';
+    import { goto } from '@sveltejs/kit';
+    
+    function goToTurnos() {
+        goto('/turnos');
+    }
 </script>
 
 <main>
     <h1>¡Bienvenido al Sistema de Gestión de Turnos!</h1>
     <p>Seleccione una opción:</p>
-    <button on:click={ () => goto('/turnos')}>Visualizar Turnos</button>
-    
+    <button on:click={goToTurnos}>Visualizar Turnos</button>
 </main>
 
 <style>
