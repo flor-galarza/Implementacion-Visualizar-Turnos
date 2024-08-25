@@ -1,8 +1,17 @@
 <script>
-    import { onMount } from 'svelte';
-    import VisualizarTurno from '/src/VisualizarTurno.svelte';
+  import VisualizarTurno from "/src/VisualizarTurno.svelte";
+
+  import Semana from "./Semana.svelte";
 </script>
 
-<h1>Bienvenido al Sistema de Gestión de Turnos</h1>
+<main>
+  <h1>Turnos</h1>
+  <Semana />
+</main>
 
-<VisualizarTurno />
+<style>
+  main {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+</style>
