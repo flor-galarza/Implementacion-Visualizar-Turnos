@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
+  import Turnos from "./Turnos.svelte";
 
   let daysOfWeek = [
     "Lunes",
@@ -16,6 +17,33 @@
   let appointments = writable([]);
   let searchQuery = "";
   let filteredAppointments = writable([]);
+
+  let mostrarTurnos = false;
+  let turnos = [
+    {
+      fecha: "2024-08-26",
+      hora: "12:00",
+      descripcion: "Turno 1",
+      marca: "Toyota",
+      tipoVehiculo: "Sedán",
+      categoriaVehiculo: "A",
+    },
+    {
+      fecha: "2024-08-27",
+      hora: "07:00",
+      descripcion: "Turno 2",
+      marca: "Honda",
+      tipoVehiculo: "SUV",
+      categoriaVehiculo: "B",
+    },
+    // Agrega más turnos aquí
+  ];
+
+  let turnoSeleccionado = null;
+
+  function cambiarVista() {
+    mostrarTurnos = !mostrarTurnos;
+  }
 
   // Generar horas desde las 7:00 am hasta las 8:00 pm
   for (let i = 7; i <= 20; i++) {
@@ -58,9 +86,10 @@
   }
 
   function showDetails(appointment) {
-    alert(
-      `DNI: ${appointment.clientDNI}\nPatente: ${appointment.vehiclePlate}`
-    );
+    turnoSeleccionado = appointment;
+  }
+  function closeDetails() {
+    turnoSeleccionado = null;
   }
 
   function filterAppointments() {
@@ -81,54 +110,117 @@
   });
 </script>
 
-<div class="controls">
-  <button on:click={previousWeek}>&larr;</button>
-  <h2>
-    Semana del {currentWeek[0]?.toLocaleDateString()} al {currentWeek[5]?.toLocaleDateString()}
-  </h2>
-  <button on:click={nextWeek}>&rarr;</button>
-</div>
+<button on:click={cambiarVista}>
+  {#if mostrarTurnos}
+    Volver al Calendario
+  {:else}
+    Ver Turnos
+  {/if}
+</button>
 
 <div class="search">
   <input
     type="text"
-    placeholder="Buscar por DNI o Patente"
+    placeholder="Buscar por Cliente o Patente o Fecha"
     bind:value={searchQuery}
     on:input={filterAppointments}
   />
 </div>
 
-<div class="calendar">
-  <div class="hour header">Hora</div>
-  {#each currentWeek as day}
-    <div class="day header">
-      {day.toLocaleDateString("es-ES", { weekday: "long", day: "numeric" })}
-    </div>
-  {/each}
-
-  {#each hours as hour}
-    <div class="hour">{hour}</div>
+{#if mostrarTurnos}
+  <Turnos {turnos} />
+{:else}
+  <div class="controls">
+    <button on:click={previousWeek}>&larr;</button>
+    <h2>
+      Semana del {currentWeek[0]?.toLocaleDateString()} al {currentWeek[5]?.toLocaleDateString()}
+    </h2>
+    <button on:click={nextWeek}>&rarr;</button>
+  </div>
+  <div class="calendar">
+    <div class="hour header">Hora</div>
     {#each currentWeek as day}
-      <button
-        class="day"
-        on:click={() => addAppointment(day, hour)}
-        on:keydown={(e) => e.key === "Enter" && addAppointment(day, hour)}
-      >
-        {#each $filteredAppointments.filter((app) => app.day.toDateString() === day.toDateString() && app.hour === hour) as appointment (appointment.id)}
-          <button
-            class="appointment"
-            on:click={() => showDetails(appointment)}
-            on:keydown={(e) => e.key === "Enter" && showDetails(appointment)}
-          >
-            Turno #{appointment.id} - {appointment.hour}
-          </button>
-        {/each}
-      </button>
+      <div class="day header">
+        {day.toLocaleDateString("es-ES", { weekday: "long", day: "numeric" })}
+      </div>
     {/each}
-  {/each}
-</div>
+
+    {#each hours as hour}
+      <div class="hour">{hour}</div>
+      {#each currentWeek as day}
+        <button
+          class="day"
+          on:dblclick={() => addAppointment(day, hour)}
+          on:keydown={(e) => e.key === "Enter" && addAppointment(day, hour)}
+        >
+          {#each $filteredAppointments.filter((app) => app.day.toDateString() === day.toDateString() && app.hour === hour) as appointment (appointment.id)}
+            <button
+              class="appointment"
+              on:click={() => showDetails(appointment)}
+              on:keydown={(e) => e.key === "Enter" && showDetails(appointment)}
+            >
+              Turno #{appointment.id} - {appointment.hour}
+            </button>
+          {/each}
+        </button>
+      {/each}
+    {/each}
+  </div>
+{/if}
+
+{#if turnoSeleccionado}
+  <div class="modal">
+    <div class="modal-content">
+      <span
+        class="close"
+        tabindex="0"
+        role="button"
+        on:click={closeDetails}
+        on:keydown={(e) => e.key === "Enter" && closeDetails()}>&times;</span
+      >
+      <h2>Detalles del Turno</h2>
+      <p>ID: {turnoSeleccionado.id}</p>
+      <p>DNI: {turnoSeleccionado.clientDNI}</p>
+      <p>Patente: {turnoSeleccionado.vehiclePlate}</p>
+    </div>
+  </div>
+{/if}
 
 <style>
+  .modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
   .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
