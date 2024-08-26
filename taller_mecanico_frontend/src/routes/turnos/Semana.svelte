@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { writable } from "svelte/store"; //e
+  import { writable } from "svelte/store";
 
   let daysOfWeek = [
     "Lunes",
@@ -13,7 +13,9 @@
   let hours = [];
   let currentWeek = [];
   let currentDate = new Date();
-  let appointments = writable([]); //e
+  let appointments = writable([]);
+  let searchQuery = "";
+  let filteredAppointments = writable([]);
 
   // Generar horas desde las 7:00 am hasta las 8:00 pm
   for (let i = 7; i <= 20; i++) {
@@ -41,7 +43,7 @@
     currentDate.setDate(currentDate.getDate() + 7);
     currentWeek = getWeekDates(currentDate);
   }
-  //turnos
+
   function addAppointment(day, hour) {
     const newAppointment = {
       id: Math.random().toString(36).substr(2, 9),
@@ -52,6 +54,7 @@
       vehiclePlate: "ABC123",
     };
     appointments.update((apps) => [...apps, newAppointment]);
+    filterAppointments();
   }
 
   function showDetails(appointment) {
@@ -60,17 +63,39 @@
     );
   }
 
+  function filterAppointments() {
+    appointments.subscribe((apps) => {
+      filteredAppointments.set(
+        apps.filter(
+          (app) =>
+            app.clientDNI.includes(searchQuery) ||
+            app.vehiclePlate.includes(searchQuery)
+        )
+      );
+    });
+  }
+
   onMount(() => {
     currentWeek = getWeekDates(currentDate);
+    filterAppointments();
   });
 </script>
 
 <div class="controls">
-  <button on:click={previousWeek}>Anterior</button>
+  <button on:click={previousWeek}>&larr;</button>
   <h2>
     Semana del {currentWeek[0]?.toLocaleDateString()} al {currentWeek[5]?.toLocaleDateString()}
   </h2>
-  <button on:click={nextWeek}>Siguiente</button>
+  <button on:click={nextWeek}>&rarr;</button>
+</div>
+
+<div class="search">
+  <input
+    type="text"
+    placeholder="Buscar por DNI o Patente"
+    bind:value={searchQuery}
+    on:input={filterAppointments}
+  />
 </div>
 
 <div class="calendar">
@@ -89,7 +114,7 @@
         on:click={() => addAppointment(day, hour)}
         on:keydown={(e) => e.key === "Enter" && addAppointment(day, hour)}
       >
-        {#each $appointments.filter((app) => app.day.toDateString() === day.toDateString() && app.hour === hour) as appointment (appointment.id)}
+        {#each $filteredAppointments.filter((app) => app.day.toDateString() === day.toDateString() && app.hour === hour) as appointment (appointment.id)}
           <button
             class="appointment"
             on:click={() => showDetails(appointment)}
@@ -132,7 +157,28 @@
   }
   .controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
+  }
+  .controls button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+  .search {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .search input {
+    width: 300px;
+    height: 20px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
   }
 </style>

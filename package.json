@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "svelte-routing": "^2.13.0"
+  }
+}
