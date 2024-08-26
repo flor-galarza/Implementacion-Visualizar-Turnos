@@ -1,4 +1,5 @@
 <script>
+  import Icon from "@iconify/svelte";
   export let turnos = [];
 
   let mostrarFiltros = false;
@@ -63,13 +64,22 @@
   }
 </script>
 
-<h1>Listado de Turnos</h1>
+<h2>
+  <Icon
+    icon="mdi:clipboard-list"
+    style=" margin-right: 10px;
+    font-size: 28px;
+    position: relative;
+    top: 5px"
+  />Listado de Turnos
+</h2>
 
 <button on:click={mostrarOpcionesFiltro}>
+  <Icon icon="mdi:filter" style=" margin-right: 5px;" />
   {#if mostrarFiltros}
-    Ocultar Filtros
+    Ocultar
   {:else}
-    Mostrar Filtros
+    Filtros
   {/if}
 </button>
 
@@ -133,10 +143,11 @@
 {/if}
 
 <button on:click={mostrarOpcionesOrdenamiento}>
+  <Icon icon="mdi:sort" class="icono-boton" />
   {#if mostrarOrdenamiento}
-    Ocultar Ordenamiento
+    Ocultar
   {:else}
-    Mostrar Ordenamiento
+    Ordenar
   {/if}
 </button>
 

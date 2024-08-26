@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
   import Turnos from "./Turnos.svelte";
+  import Icon from "@iconify/svelte";
 
   let daysOfWeek = [
     "Lunes",
@@ -112,13 +113,20 @@
 
 <button on:click={cambiarVista}>
   {#if mostrarTurnos}
-    Volver al Calendario
+    Calendario
   {:else}
-    Ver Turnos
+    Lista Turnos
   {/if}
 </button>
 
 <div class="search">
+  <Icon
+    icon="mdi:magnify"
+    style=" margin-right: 10px;
+    font-size: 28px;
+    position: relative;
+    top: 5px"
+  />
   <input
     type="text"
     placeholder="Buscar por Cliente o Patente o Fecha"
@@ -130,6 +138,7 @@
 {#if mostrarTurnos}
   <Turnos {turnos} />
 {:else}
+  <h2>Calendario</h2>
   <div class="controls">
     <button on:click={previousWeek}>&larr;</button>
     <h2>

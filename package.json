@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "svelte-routing": "^2.13.0"
+  },
+  "devDependencies": {
+    "@iconify/svelte": "^4.0.2"
   }
 }
