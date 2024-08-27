@@ -375,7 +375,11 @@
 						description: info.event.extendedProps.description,
 						marca: info.event.extendedProps.marca,
 						tipo: info.event.extendedProps.tipo,
-						categoria: info.event.extendedProps.categoria
+						categoria: info.event.extendedProps.categoria,
+						cliente: info.event.extendedProps.cliente,
+						dni: info.event.extendedProps.dni,
+						telefono: info.event.extendedProps.telefono,
+						email: info.event.extendedProps.email
 					};
 					showModal = true;
 				}
