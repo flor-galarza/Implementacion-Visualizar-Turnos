@@ -344,6 +344,8 @@
 	let marcaFiltro = '';
 	let categoriaFiltro = '';
 
+	//estado para busqueda
+	let busqueda = '';
 	// Filtros únicos para los selectores
 	let tipos = [...new Set(events.map((event) => event.tipo))];
 	let marcas = [...new Set(events.map((event) => event.marca))];
@@ -361,7 +363,25 @@
 		calendar.getEvents().forEach((e) => e.remove());
 		calendar.addEventSource(filteredEvents);
 	}
-
+	//funcion para buscar
+	function buscar() {
+		let filteredEvents = events.filter((event) => {
+			return (
+				!busqueda ||
+				event.title.includes(busqueda) ||
+				event.description.includes(busqueda) ||
+				event.marca.includes(busqueda) ||
+				event.tipo.includes(busqueda) ||
+				event.categoria.includes(busqueda) ||
+				event.cliente.includes(busqueda) ||
+				event.dni.includes(busqueda) ||
+				event.telefono.includes(busqueda) ||
+				event.email.includes(busqueda)
+			);
+		});
+		calendar.getEvents().forEach((e) => e.remove());
+		calendar.addEventSource(filteredEvents);
+	}
 	onMount(() => {
 		if (calendarElement) {
 			calendar = new Calendar(calendarElement, {
@@ -419,6 +439,8 @@
 			<option value={categoria}>{categoria}</option>
 		{/each}
 	</select>
+	<input type="text" id="busqueda" bind:value={busqueda} placeholder="Buscar turnos..." />
+	<button on:click={buscar}>Buscar</button>
 </div>
 
 <div bind:this={calendarElement} id="calendar"></div>
