@@ -346,6 +346,17 @@
 
 	//estado para busqueda
 	let busqueda = '';
+	const searchFields = [
+		'title',
+		'description',
+		'marca',
+		'tipo',
+		'categoria',
+		'cliente',
+		'dni',
+		'telefono',
+		'email'
+	];
 	// Filtros únicos para los selectores
 	let tipos = [...new Set(events.map((event) => event.tipo))];
 	let marcas = [...new Set(events.map((event) => event.marca))];
@@ -365,20 +376,21 @@
 	}
 	//funcion para buscar
 	function buscar() {
+		// Filtrar eventos por busqueda
 		let filteredEvents = events.filter((event) => {
+			// Buscar en los campos definidos en searchFields
 			return (
 				!busqueda ||
-				event.title.includes(busqueda) ||
-				event.description.includes(busqueda) ||
-				event.marca.includes(busqueda) ||
-				event.tipo.includes(busqueda) ||
-				event.categoria.includes(busqueda) ||
-				event.cliente.includes(busqueda) ||
-				event.dni.includes(busqueda) ||
-				event.telefono.includes(busqueda) ||
-				event.email.includes(busqueda)
+				// Buscar en cada campo del evento si alguno incluye el parametro de busqueda
+				searchFields.some((field) => {
+					if (field in event) {
+						return event[field].toLowerCase().includes(busqueda.toLowerCase());
+					}
+					return false;
+				})
 			);
 		});
+
 		calendar.getEvents().forEach((e) => e.remove());
 		calendar.addEventSource(filteredEvents);
 	}
