@@ -394,57 +394,57 @@
 				})
 			);
 		});
-
-		calendar.getEvents().forEach((e) => e.remove());
-		calendar.addEventSource(filteredEvents);
+		if (mostrarCalendario) {
+			calendar.getEvents().forEach((e) => e.remove());
+			calendar.addEventSource(filteredEvents);
+		}
 	}
 	//funcion para cambiar vista entre calendario y lista
 	async function toggleVista() {
-    mostrarCalendario = !mostrarCalendario;
-    if (mostrarCalendario) {
-      await tick(); // Esperar a que el DOM se actualice
-      initializeCalendar();
-    }
-  }
+		mostrarCalendario = !mostrarCalendario;
+		if (mostrarCalendario) {
+			await tick(); // Esperar a que el DOM se actualice
+			initializeCalendar();
+		}
+	}
 	// Inicializar el calendario
-	function initializeCalendar(){
-		if (calendar){
+	function initializeCalendar() {
+		if (calendar) {
 			calendar.destroy();
 		}
 		calendar = new Calendar(calendarElement, {
-				plugins: [dayGridPlugin, timeGridPlugin],
-				initialView: 'timeGridWeek',
-				events: events,
-				eventClick: function (info) {
-					currentEvent = {
-						title: info.event.title,
-						start: info.event.startStr,
-						description: info.event.extendedProps.description,
-						marca: info.event.extendedProps.marca,
-						tipo: info.event.extendedProps.tipo,
-						categoria: info.event.extendedProps.categoria,
-						cliente: info.event.extendedProps.cliente,
-						dni: info.event.extendedProps.dni,
-						telefono: info.event.extendedProps.telefono,
-						email: info.event.extendedProps.email
-					};
-					showModal = true;
-				}
-			});
+			plugins: [dayGridPlugin, timeGridPlugin],
+			initialView: 'timeGridWeek',
+			events: events,
+			eventClick: function (info) {
+				currentEvent = {
+					title: info.event.title,
+					start: info.event.startStr,
+					description: info.event.extendedProps.description,
+					marca: info.event.extendedProps.marca,
+					tipo: info.event.extendedProps.tipo,
+					categoria: info.event.extendedProps.categoria,
+					cliente: info.event.extendedProps.cliente,
+					dni: info.event.extendedProps.dni,
+					telefono: info.event.extendedProps.telefono,
+					email: info.event.extendedProps.email
+				};
+				showModal = true;
+			}
+		});
 
-			calendar.render();
+		calendar.render();
 	}
 	onMount(() => {
-    	if (mostrarCalendario) {
-      		initializeCalendar();
-    	}
-  	});
+		if (mostrarCalendario) {
+			initializeCalendar();
+		}
+	});
 
 	function closeModal() {
 		showModal = false;
 		currentEvent = null;
 	}
-	
 </script>
 
 <div>
@@ -474,20 +474,20 @@
 	<input type="text" id="busqueda" bind:value={busqueda} placeholder="Buscar turnos..." />
 	<button on:click={buscar}>Buscar</button>
 	<button on:click={toggleVista}>
-    	{#if mostrarCalendario}
-      		Ver como Lista
-    	{:else}
-      		Ver como Calendario
-    	{/if}
-  </button>
+		{#if mostrarCalendario}
+			Ver como Lista
+		{:else}
+			Ver como Calendario
+		{/if}
+	</button>
 </div>
 
 <div bind:this={calendarElement} id="calendar"></div>
 
 {#if mostrarCalendario}
-  <div bind:this={calendarElement} id="calendar"></div>
+	<div bind:this={calendarElement} id="calendar"></div>
 {:else}
-  <ListaTurnos {events} />
+	<ListaTurnos {events} {busqueda} {searchFields} />
 {/if}
 
 {#if showModal && currentEvent}
