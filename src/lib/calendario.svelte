@@ -4,7 +4,7 @@
 	import dayGridPlugin from '@fullcalendar/daygrid';
 	import timeGridPlugin from '@fullcalendar/timegrid';
 	import Modal from '$lib/Modal.svelte'; // Asegúrate de que esta ruta sea correcta
-
+	import ListaTurnos from './listaTurnos.svelte';
 	let calendarElement;
 	let calendar;
 	let showModal = false;
@@ -346,6 +346,9 @@
 
 	//estado para busqueda
 	let busqueda = '';
+
+	let mostrarCalendario = true;
+
 	const searchFields = [
 		'title',
 		'description',
@@ -394,6 +397,9 @@
 		calendar.getEvents().forEach((e) => e.remove());
 		calendar.addEventSource(filteredEvents);
 	}
+	function toggleVista() {
+    	mostrarCalendario = !mostrarCalendario;
+  	}
 	onMount(() => {
 		if (calendarElement) {
 			calendar = new Calendar(calendarElement, {
@@ -425,6 +431,7 @@
 		showModal = false;
 		currentEvent = null;
 	}
+	
 </script>
 
 <div>
@@ -453,9 +460,22 @@
 	</select>
 	<input type="text" id="busqueda" bind:value={busqueda} placeholder="Buscar turnos..." />
 	<button on:click={buscar}>Buscar</button>
+	<button on:click={toggleVista}>
+    	{#if mostrarCalendario}
+      		Ver como Lista
+    	{:else}
+      		Ver como Calendario
+    	{/if}
+  </button>
 </div>
 
 <div bind:this={calendarElement} id="calendar"></div>
+
+{#if mostrarCalendario}
+  <div bind:this={calendarElement} id="calendar"></div>
+{:else}
+  <ListaTurnos {events} />
+{/if}
 
 {#if showModal && currentEvent}
 	<Modal {currentEvent} close={closeModal} />
