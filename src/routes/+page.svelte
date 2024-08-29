@@ -1,6 +1,7 @@
 <script>
 	import Calendario from '$lib/calendario.svelte';
 	import Filtros from '$lib/filtros.svelte';
+	export let data;
 
 	let tiposVehiculo = ['Sedán', 'SUV', 'Camión'];
 	let fechas = [];
@@ -20,4 +21,6 @@
 
 <Filtros {tiposVehiculo} {fechas} on:filter={applyFilters} />
 
-<Calendario {turnos} />
+<!-- <Calendario {turnos} /> -->
+
+<Calendario turnos={data.turnos} />
