@@ -15,13 +15,24 @@
     <div class="turno">
       <h3>{event.title}</h3>
       <p>{event.description}</p>
-      <p><strong>Marca:</strong> {event.marca}</p>
-      <p><strong>Tipo:</strong> {event.tipo}</p>
-      <p><strong>Categoría:</strong> {event.categoria}</p>
-      <p><strong>Cliente:</strong> {event.cliente}</p>
-      <p><strong>DNI:</strong> {event.dni}</p>
-      <p><strong>Teléfono:</strong> {event.telefono}</p>
-      <p><strong>Email:</strong> {event.email}</p>
+      <div class="container">
+            <div class="column">
+                <p><strong>Marca:</strong> {event.marca}</p>
+                <p><strong>Tipo:</strong> {event.tipo}</p>
+                <p><strong>Categoría:</strong> {event.categoria}</p>
+            </div>
+            <div class="column">
+                <p><strong>Fecha:</strong> {event.start}</p>
+                <p><strong>Hora:</strong> {event.start}</p>
+            </div>
+            <div class="column">
+                <p><strong>Cliente:</strong> {event.cliente}</p>
+                <p><strong>DNI:</strong> {event.dni}</p>
+                <p><strong>Teléfono:</strong> {event.telefono}</p>
+                <p><strong>Email:</strong> {event.email}</p>
+            </div>
+    
+        </div>
     </div>
   {/each}
 </div>
