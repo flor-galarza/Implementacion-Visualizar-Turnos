@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Calendar } from '@fullcalendar/core';
+	import { tick } from 'svelte';
 	import dayGridPlugin from '@fullcalendar/daygrid';
 	import timeGridPlugin from '@fullcalendar/timegrid';
 	import Modal from '$lib/Modal.svelte'; // Asegúrate de que esta ruta sea correcta
@@ -397,12 +398,20 @@
 		calendar.getEvents().forEach((e) => e.remove());
 		calendar.addEventSource(filteredEvents);
 	}
-	function toggleVista() {
-    	mostrarCalendario = !mostrarCalendario;
-  	}
-	onMount(() => {
-		if (calendarElement) {
-			calendar = new Calendar(calendarElement, {
+	//funcion para cambiar vista entre calendario y lista
+	async function toggleVista() {
+    mostrarCalendario = !mostrarCalendario;
+    if (mostrarCalendario) {
+      await tick(); // Esperar a que el DOM se actualice
+      initializeCalendar();
+    }
+  }
+	// Inicializar el calendario
+	function initializeCalendar(){
+		if (calendar){
+			calendar.destroy();
+		}
+		calendar = new Calendar(calendarElement, {
 				plugins: [dayGridPlugin, timeGridPlugin],
 				initialView: 'timeGridWeek',
 				events: events,
@@ -424,8 +433,12 @@
 			});
 
 			calendar.render();
-		}
-	});
+	}
+	onMount(() => {
+    	if (mostrarCalendario) {
+      		initializeCalendar();
+    	}
+  	});
 
 	function closeModal() {
 		showModal = false;
